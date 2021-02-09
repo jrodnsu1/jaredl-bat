@@ -1,5 +1,5 @@
 ﻿#Copy Files from the network share to the server
-$Source = "slb-dc1\installs\IMM e-sign\SouthLouisianaBank"
+$Source = "\\slb-dc1\installs\IMM e-sign\SouthLouisianaBank"
 $Destination = "c:\admin\"
 New-Item -ItemType directory -path $Destination -force
 Copy-Item -Path $Source\ -Destination $Destination -Recurse -force
