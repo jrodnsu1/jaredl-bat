@@ -1,4 +1,4 @@
-﻿#Copy Files from the networ share to the server
+﻿#Copy Files from the network share to the server
 $Source = "\\cnm-fs1\data\users\jared\SouthLouisianaBank"
 $Destination = "c:\admin\"
 New-Item -ItemType directory -path $Destination -force
