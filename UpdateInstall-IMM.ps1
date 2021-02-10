@@ -1,4 +1,5 @@
 ﻿#Copy Files from the network share to the server
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
 $Source = "\\slb-dc1\installs\IMM e-sign\SouthLouisianaBank"
 $Destination = "c:\admin\"
 New-Item -ItemType directory -path $Destination -force
