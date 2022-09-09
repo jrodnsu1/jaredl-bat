@@ -1,6 +1,5 @@
-﻿#Copy Files 
-$url = "https://web.archive.org/web/20190830103837/https://download.microsoft.com/download/1/7/d/17d82b72-bc6a-4dc8-bfaa-98b37b22b367/subinacl.msi"
-$Dest = "c:\windows\temp\subinacl.msi"
+#Copy Files from the network share to the server
+copy-item -path "\\Inv-data\data\Installers\HorizonXE\subinacl.msi" -Destination "c:\windows\temp\subinacl.msi"
 
 # Download the file
 Invoke-Webrequest -Uri $url -Outfile $dest
