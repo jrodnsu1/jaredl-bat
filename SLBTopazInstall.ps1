@@ -7,5 +7,5 @@ Copy-Item -Path $Source1\ -Destination $Destination1 -Recurse -force
 #Install Software
 
 #Running the installers
-Start-process -wait -filePath "c:\windows\temp\SigPlusExtLite.exe" -ArgumentList '/S','/v', '/qn' -PassThru | write-output
-Start-process -wait -filePath "c:\windows\temp\sigplus.exe" -ArgumentList '/S','/sps','/v','/qn' -PassThru | write-output
+Start-process -wait -filePath "c:\windows\temp\Topaz Signature Pads w DemoOCX\SigPlusExtLite.exe" -ArgumentList '/S','/v', '/qn' -PassThru | write-output
+Start-process -wait -filePath "c:\windows\temp\Topaz Signature Pads w DemoOCX\sigplus.exe" -ArgumentList '/S','/sps','/v','/qn' -PassThru | write-output
