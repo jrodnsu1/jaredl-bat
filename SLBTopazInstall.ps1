@@ -1,5 +1,5 @@
 #Copy Files from the network share to the server
-$Source1 = "\\Slb-dc1\D$\Data\installs\CSI\Topaz Signature Pads w DemoOCX"
+$Source1 = "\\Slb-dc1\installs\CSI\Topaz Signature Pads w DemoOCX"
 $Destination1 = "c:\windows\temp"
 New-Item -ItemType directory -path $Destination1 -force
 Copy-Item -Path $Source1\ -Destination $Destination1 -Recurse -force
