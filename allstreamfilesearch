@@ -1,0 +1,34 @@
+$reportpath = "\\asr-fs\netlogon\filesearch\" + $env:COMPUTERNAME + "ScanReportCdrive.txt"
+$csvPath = "\\asr-fs\netlogon\filesearch\filesearchcsv.csv"
+$SearchPath = "C:\"
+
+$computerInfo = Get-ComputerInfo | select CsName,CsDomain,CsManufacturer,CsModel
+
+[PSCustomObject]@{
+    ComputerName = $computerInfo.CsName
+    Domain = $computerInfo.CsDomain
+    Manufacturer = $computerInfo.CsManufacturer
+    Model = $computerInfo.CsModel
+
+} | Format-List | out-file -FilePath $reportpath -Append
+
+$now = Get-Date
+$totalFilesAndFolders = (Get-ChildItem -path $SearchPath -Recurse | Measure-Object).Count
+$filesFound = (Get-ChildItem -Path $SearchPath -Recurse -Attributes !Directory | Measure-Object).Count
+$foldersFound = $totalFilesAndFolders - $filesFound
+
+$csv = Import-Csv -Path $csvPath -Header "Name"
+$csv | ForEach-Object {
+    $name = $_.Name
+    
+    $files = (Get-ChildItem -Path $SearchPath -File -Filter $name -Recurse).FullName
+    if ($files -ne $null) {
+    #$files | Write-Output
+    $files | out-file -FilePath $reportpath -Append -ErrorAction SilentlyContinue
+    }
+    else {
+        Write-output "No files found named: $($name)" | out-file -FilePath $reportpath -Append
+    }
+}
+
+Write-output `n "Scanned $filesFound files and $foldersFound folders on $now" | Out-File -FilePath $reportpath -Append
