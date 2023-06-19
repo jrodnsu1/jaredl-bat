@@ -2,12 +2,12 @@
 
 [CmdletBinding()]
 param (
-    $url
 	[Parameter(Mandatory=$true)]
 	[string]$TeamsPath
 
 )
-
+   
+$url
 $url32 = 'https://aka.ms/teams32bitmsi'
 $url64 = 'https://aka.ms/teams64bitmsi'
 
