@@ -1,0 +1,53 @@
+#!ps
+#maxlength=300000
+#timeout=600000
+# Set the start and end dates for the week
+$today = Get-Date
+$startDate = $today.AddDays(-7)
+$endDate = $today.AddDays(-1)
+
+# Query the security event logs for lockouts and failed logins
+$events = Get-WinEvent -FilterHashtable @{
+    LogName = 'Security'
+    ID = 4740, 4625
+    StartTime = $startDate
+    EndTime = $endDate
+}
+
+# Filter and display the lockout events
+$lockouts = $events | Where-Object {$_.Id -eq 4740}
+if ($lockouts) {
+    Write-Host "=== Lockout Events ==="
+    $lockouts | ForEach-Object {
+        $event = $_
+        $timeCreated = $event.TimeCreated
+        $userName = $event.Properties[0].Value
+        $target = $event.Properties[1].Value
+        Write-Host "Time: $timeCreated"
+        Write-Host "User: $userName"
+        Write-Host "Target: $target"
+        Write-Host
+    }
+} else {
+    Write-Host "No lockout events found."
+}
+
+# Filter and display the failed login events
+$failedLogins = $events | Where-Object {$_.Id -eq 4625}
+if ($failedLogins) {
+    Write-Host "=== Failed Login Events ==="
+    $failedLogins | ForEach-Object {
+        $event = $_
+        $timeCreated = $event.TimeCreated
+        $userName = $event.Properties[5].Value
+        $status = $event.Properties[8].Value
+        $source = $event.Properties[19].Value
+        Write-Host "Time: $timeCreated"
+        Write-Host "User: $userName"
+        Write-Host "Status: $status"
+        Write-Host "Source: $source"
+        Write-Host
+    }
+} else {
+    Write-Host "No failed login events found."
+}
