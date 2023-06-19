@@ -1,8 +1,11 @@
 #.DESCRIPTION'Installs Microsoft Teams in all user mode'#
 
-Param(
-$url,
-$TeamsPath = "c:\temp\teams.msi"
+[CmdletBinding()]
+param (
+    $url
+	[Parameter(Mandatory=$true)]
+	[string]$TeamsPath
+
 )
 
 $url32 = 'https://aka.ms/teams32bitmsi'
