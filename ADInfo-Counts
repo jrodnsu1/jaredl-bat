@@ -75,9 +75,13 @@ $outputContent | ForEach-Object {
 }
 
 # Display the user accounts and their occurrences
-Write-Host "User Accounts and Occurrences:"
+Write-Output "User Accounts and Occurrences:"
 foreach ($user in $users.GetEnumerator() | Sort-Object Value -Descending) {
     $account = $user.Key
     $count = $user.Value
-    Write-Host "User: $account  Occurrences: $count"
+    Write-Output "User: $account  Occurrences: $count"
 }
+
+# Write the first 20 lines of the log to the output
+Write-Output "`r`nFirst 20 lines of the log:"
+$outputContent | Select-Object -First 20
