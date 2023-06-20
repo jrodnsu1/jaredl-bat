@@ -14,6 +14,9 @@ $events = Get-WinEvent -FilterHashtable @{
 # Initialize an empty string to store the log information
 $logContent = ""
 
+# Initialize an empty hashtable to store user counts
+$userCounts = @{}
+
 # Filter and append the lockout events to the log content
 $lockouts = $events | Where-Object {$_.Id -eq 4740}
 if ($lockouts) {
@@ -26,6 +29,13 @@ if ($lockouts) {
         $logContent += "Time: $timeCreated`n"
         $logContent += "User: $userName`n"
         $logContent += "Target: $target`n`n"
+
+        # Update user count
+        if ($userCounts.ContainsKey($userName)) {
+            $userCounts[$userName]++
+        } else {
+            $userCounts[$userName] = 1
+        }
     }
 } else {
     $logContent += "No lockout events found.`n"
@@ -45,6 +55,13 @@ if ($failedLogins) {
         $logContent += "User: $userName`n"
         $logContent += "Status: $status`n"
         $logContent += "Source: $source`n`n"
+
+        # Update user count
+        if ($userCounts.ContainsKey($userName)) {
+            $userCounts[$userName]++
+        } else {
+            $userCounts[$userName] = 1
+        }
     }
 } else {
     $logContent += "No failed login events found.`n"
@@ -55,5 +72,14 @@ $logPath = "C:\Windows\Temp\log.txt"
 $logContent | Out-File -FilePath $logPath -Encoding UTF8
 
 # Display the first 20 lines of the log content
+Write-Host "Log file saved to: $logPath`n"
+Write-Host "=== First 20 Lines of Log Content ===`n"
 $first20Lines = $logContent -split "`n" | Select-Object -First 20
 $first20Lines
+
+# Save the user counts to a text file
+$countPath = "C:\Windows\Temp\user_counts.txt"
+$userCounts.GetEnumerator() | Sort-Object -Property Value -Descending | ForEach-Object {
+    $userName = $_.Key
+    $count = $_.Value
+   
