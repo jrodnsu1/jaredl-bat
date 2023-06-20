@@ -1,3 +1,6 @@
+# Delete the output file if it exists
+Remove-Item -Path 'C:\Windows\Temp\AD_Weekly_Logins.txt' -ErrorAction SilentlyContinue
+
 # Set the date range for the past week
 $startDate = (Get-Date).AddDays(-7)
 $endDate = Get-Date
