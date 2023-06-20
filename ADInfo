@@ -55,8 +55,5 @@ $logPath = "C:\Windows\Temp\log.txt"
 $logContent | Out-File -FilePath $logPath -Encoding UTF8
 
 # Display the first 20 lines of the log content
-Write-Host "Log file saved to: $logPath`n"
-Write-Host "=== First 20 Lines of Log Content ===`n"
 $first20Lines = $logContent -split "`n" | Select-Object -First 20
 $first20Lines
-
