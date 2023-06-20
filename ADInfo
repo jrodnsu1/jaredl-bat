@@ -1,6 +1,6 @@
 # Set the start and end dates for the week
 $today = Get-Date
-$startDate = $today.AddDays(-7)
+$startDate = $today.AddDays(-14)
 $endDate = $today.AddDays(-1)
 
 # Query the security event logs for lockouts and failed logins
