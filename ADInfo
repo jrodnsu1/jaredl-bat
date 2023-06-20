@@ -82,4 +82,5 @@ $countPath = "C:\Windows\Temp\user_counts.txt"
 $userCounts.GetEnumerator() | Sort-Object -Property Value -Descending | ForEach-Object {
     $userName = $_.Key
     $count = $_.Value
-   
+    "$userName: $count" |
+
