@@ -1,0 +1,83 @@
+# Set the date range for the past week
+$startDate = (Get-Date).AddDays(-7)
+$endDate = Get-Date
+
+# Retrieve the security event logs for the specified date range
+$events = Get-WinEvent -FilterHashtable @{
+    LogName = 'Security'
+    ID = 4740, 4625
+    StartTime = $startDate
+    EndTime = $endDate
+}
+
+# Filter and store the lockout and failed login events
+$lockouts = $events | Where-Object { $_.Id -eq 4740 }
+$failedLogins = $events | Where-Object { $_.Id -eq 4625 }
+
+# Create a string to hold the event information
+$output = ""
+
+$output += "Weekly Active Directory Lockouts:`r`n"
+$lockouts | ForEach-Object {
+    $time = $_.TimeCreated.ToString('yyyy-MM-dd HH:mm:ss')
+    $account = $_.Properties[0].Value
+    $lockoutSource = $_.Properties[1].Value
+
+    $output += "Time: $time`r`n"
+    $output += "Account: $account`r`n"
+    $output += "Lockout Source: $lockoutSource`r`n"
+    $output += "----------------------`r`n"
+    # Break the loop if 20 lines have been written
+    if (($output.Split("`r`n")).Count -gt 80) {
+        break
+    }
+}
+
+$output += "`r`nWeekly Failed Logins:`r`n"
+$failedLogins | ForEach-Object {
+    $time = $_.TimeCreated.ToString('yyyy-MM-dd HH:mm:ss')
+    $account = $_.Properties[5].Value
+    $loginSource = $_.Properties[18].Value
+
+    $output += "Time: $time`r`n"
+    $output += "Account: $account`r`n"
+    $output += "Login Source: $loginSource`r`n"
+    $output += "----------------------`r`n"
+    # Break the loop if 20 lines have been written
+    if (($output.Split("`r`n")).Count -gt 80) {
+        break
+    }
+}
+
+# Save the event information to a text file
+$outputFile = 'C:\Windows\Temp\AD_Weekly_Logins.txt'
+$output | Out-File -FilePath $outputFile -Encoding UTF8
+
+# Read the content of the output file
+$outputContent = Get-Content -Path $outputFile
+
+# Create a hashtable to store user accounts and their occurrences
+$users = @{}
+
+# Process each line of the output
+$outputContent | ForEach-Object {
+    # Extract the user account from the line
+    if ($_ -match 'Account:\s(.*)') {
+        $user = $matches[1]
+
+        # Increment the count for the user account
+        if ($users.ContainsKey($user)) {
+            $users[$user]++
+        } else {
+            $users[$user] = 1
+        }
+    }
+}
+
+# Display the user accounts and their occurrences
+Write-Host "User Accounts and Occurrences:"
+foreach ($user in $users.GetEnumerator() | Sort-Object Value -Descending) {
+    $account = $user.Key
+    $count = $user.Value
+    Write-Host "User: $account  Occurrences: $count"
+}
